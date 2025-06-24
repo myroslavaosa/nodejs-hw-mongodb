@@ -28,7 +28,7 @@ export const createContactController = async (req, res, next) => {
     res.json({
         status: 201,
         message: `Successfully created a contact!`,
-        data: contact.data,
+        data: contact,
     });
 };
 
@@ -55,6 +55,5 @@ export const deleteContactController = async (req, res, next) => {
 
     res.json({
         status: 204,
-        message: `Successfully deleted a contact!`,
     });
 };
