@@ -15,7 +15,16 @@ export const getAllContacts = async (req, res, next) => {
         type,
         isFavourite,
     });
-    res.status(result.status).json(result);
+
+    const { contacts, ...pagination } = result.data;
+    res.json({
+        status: 200,
+        message: `Successfully found contacts!`,
+        data: {
+            data: contacts,
+            ...pagination
+        }
+    });
 };
 
 export const getContactById = async (req, res, next) => {
