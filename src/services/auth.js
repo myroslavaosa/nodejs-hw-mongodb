@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SessionsCollection } from '../db/models/session.js';
 
-
 export const registerUser = async (payload) => {
     const { email, password, name } = payload;
 
@@ -32,7 +31,6 @@ export const registerUser = async (payload) => {
     return userObject;
 };
 
-// src/services/auth.js
 export const createSession = async (userId) => {
     const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
     const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
@@ -112,4 +110,30 @@ export const logoutSession = async (refreshToken) => {
     if (!session) {
         throw createHttpError(401, 'Invalid session');
     }
+};
+
+export const logoutSessionsByUserId = async (userId) => {
+    await SessionsCollection.deleteMany({ userId });
+};
+
+
+export const loginUser = async (email, password) => {
+    const user = await UsersCollection.findOne({ email });
+    if (!user) {
+        throw createHttpError(401, 'Invalid email or password');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        throw createHttpError(401, 'Invalid email or password');
+    }
+
+    await logoutSessionsByUserId(user._id);
+
+    const { accessToken, refreshToken } = await createSession(user._id);
+
+    const userObject = user.toObject();
+    delete userObject.password;
+
+    return { user: userObject, accessToken, refreshToken };
 };

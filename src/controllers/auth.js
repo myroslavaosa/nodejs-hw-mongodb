@@ -1,6 +1,6 @@
 // src/controllers/auth.js
 import createHttpError from 'http-errors';
-import { registerUser, createSession, refreshSession, logoutSession } from '../services/auth.js';
+import { registerUser, createSession, refreshSession, logoutSession, loginUser } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
     // 1. Create the user
@@ -62,4 +62,30 @@ export const logoutController = async (req, res) => {
     // Cookie löschen
     res.clearCookie('refreshToken');
     res.status(204).end();
+};
+
+export const loginUserController = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+
+        const { accessToken, refreshToken } = await loginUser(email, password);
+
+        const isProduction = process.env.NODE_ENV === 'production';
+
+        // Записати refreshToken у cookie
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: isProduction, // true на https
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 днів
+        });
+
+        res.status(200).json({
+            status: 200,
+            message: 'Successfully logged in an user!',
+            data: { accessToken },
+        });
+    } catch (err) {
+        next(err);
+    }
 };
