@@ -8,11 +8,12 @@ export const registerUserController = async (req, res) => {
 
     // 2. Create access and refresh tokens for this user
     const { accessToken, refreshToken } = await createSession(user._id);
+    const isProduction = process.env.NODE_ENV === 'production';
 
     // 3. Set the refresh token in a cookie
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false, // set true if HTTPS
+        secure: isProduction, // set true if HTTPS
         sameSite: 'strict',
     });
 
@@ -34,11 +35,12 @@ export const refreshUserController = async (req, res) => {
     }
 
     const { accessToken, refreshToken: newRefreshToken } = await refreshSession(refreshToken);
+    const isProduction = process.env.NODE_ENV === 'production';
 
     res
         .cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            secure: true, // увімкнути на https
+            secure: isProduction, // увімкнути на https
             sameSite: 'strict',
         })
         .status(200)
