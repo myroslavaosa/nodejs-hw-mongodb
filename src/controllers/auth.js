@@ -1,6 +1,6 @@
 // src/controllers/auth.js
 import createHttpError from 'http-errors';
-import { registerUser, createSession, refreshSession, logoutSession, loginUser } from '../services/auth.js';
+import { registerUser, createSession, refreshSession, logoutSession, loginUser, logoutSessionsByUserId } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
     // 1. Create the user
@@ -16,6 +16,8 @@ export const registerUserController = async (req, res) => {
         secure: isProduction, // set true if HTTPS
         sameSite: 'strict',
     });
+
+    await logoutSessionsByUserId(user._id);
 
     // 4. Send response with access token and user info
     res.status(201).json({
