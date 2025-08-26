@@ -3,23 +3,19 @@ import createHttpError from 'http-errors';
 import { registerUser, createSession, refreshSession, logoutSession, loginUser, logoutSessionsByUserId } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
-    // 1. Create the user
     const user = await registerUser(req.body);
 
-    // 2. Create access and refresh tokens for this user
+    await logoutSessionsByUserId(user._id); // remove old sessions first
+
     const { accessToken, refreshToken } = await createSession(user._id);
     const isProduction = process.env.NODE_ENV === 'production';
 
-    // 3. Set the refresh token in a cookie
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: isProduction, // set true if HTTPS
+        secure: isProduction,
         sameSite: 'strict',
     });
 
-    await logoutSessionsByUserId(user._id);
-
-    // 4. Send response with access token and user info
     res.status(201).json({
         status: 201,
         message: 'Successfully registered a user!',
@@ -27,10 +23,10 @@ export const registerUserController = async (req, res) => {
     });
 };
 
-
-
 export const refreshUserController = async (req, res) => {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken =
+        req.cookies?.refreshToken ||
+        req.headers['authorization']?.replace('Bearer ', '');
 
     if (!refreshToken) {
         throw createHttpError(401, 'No refresh token provided');
