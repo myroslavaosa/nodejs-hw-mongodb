@@ -2,27 +2,28 @@
 import createHttpError from 'http-errors';
 import { registerUser, createSession, refreshSession, logoutSession } from '../services/auth.js';
 
-export const registerUserController = async (req, res) => {
-    // 1. Create the user
-    const user = await registerUser(req.body);
+export const registerUserController = async (req, res, next) => {
+    try {
+        const user = await registerUser(req.body);
+        const { accessToken, refreshToken } = await createSession(user._id);
 
-    // 2. Create access and refresh tokens for this user
-    const { accessToken, refreshToken } = await createSession(user._id);
-    const isProduction = process.env.NODE_ENV === 'production';
+        const isProduction = process.env.NODE_ENV === 'production';
 
-    // 3. Set the refresh token in a cookie
-    res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: isProduction, // set true if HTTPS
-        sameSite: 'strict',
-    });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: 'strict',
+        });
 
-    // 4. Send response with access token and user info
-    res.status(201).json({
-        status: 201,
-        message: 'Successfully registered a user!',
-        data: { user, accessToken },
-    });
+        res.status(201).json({
+            status: 201,
+            message: 'Successfully registered a user!',
+            data: { user, accessToken },
+        });
+    } catch (err) {
+        console.error('❌ registerUserController error:', err); // ✅ log full error
+        next(err);
+    }
 };
 
 
