@@ -1,0 +1,35 @@
+tags:
+  - Contacts
+summary: Delete a contact
+operationId: deleteContact
+description: Delete a contact belonging to the authorized user by its ID
+security:
+  - bearerAuth: []
+parameters:
+  - name: contactId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: The unique ID of the contact
+responses:
+  '200':
+    description: Successfully deleted contact
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 204
+            message:
+              type: string
+              example: Contact deleted successfully
+  '404':
+    description: Contact not found
+  '401':
+    description: Unauthorized

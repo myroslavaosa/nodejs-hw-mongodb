@@ -1,4 +1,4 @@
-// src/constants/index.js
+import path from 'path';
 
 export const SORT_ORDER = {
     ASC: 'asc',
@@ -12,3 +12,6 @@ export const SMTP = {
     SMTP_PASSWORD: 'SMTP_PASSWORD',
     SMTP_FROM: 'SMTP_FROM',
 };
+
+// Path to your Swagger JSON
+export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');
