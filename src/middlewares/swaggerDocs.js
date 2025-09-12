@@ -1,21 +1,17 @@
-// src/middlewares/swaggerDocs.js
-import createHttpError from 'http-errors';
 import swaggerUI from 'swagger-ui-express';
-import fs from 'node:fs';
+import YAML from 'yamljs';
 import { SWAGGER_PATH } from '../constants/index.js';
 
 export const swaggerDocs = () => {
-    let swaggerDoc;
-
     try {
-        swaggerDoc = JSON.parse(fs.readFileSync(SWAGGER_PATH, 'utf-8'));
+        const swaggerDoc = YAML.load(SWAGGER_PATH);
+        return [swaggerUI.serve, swaggerUI.setup(swaggerDoc)];
     } catch (err) {
-        // Always return an array
         return [
-            (req, res, next) =>
-                next(createHttpError(500, "Can't load swagger docs", { cause: err })),
+            (req, res, next) => {
+                console.error("Can't load swagger docs:", err);
+                res.status(500).json({ message: "Can't load swagger docs" });
+            }
         ];
     }
-
-    return [swaggerUI.serve, swaggerUI.setup(swaggerDoc)];
 };

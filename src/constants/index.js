@@ -14,4 +14,4 @@ export const SMTP = {
 };
 
 // Path to your Swagger JSON
-export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');
+export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'openapi.yaml');
