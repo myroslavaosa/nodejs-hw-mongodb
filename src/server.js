@@ -32,14 +32,15 @@ export const setupServer = () => {
 
     app.use(router);
 
-    app.use(notFoundHandler);
-    app.use(errorHandler);
-
     // Serve Swagger JSON statically (optional)
     app.use('/swagger-json', express.static(path.dirname(SWAGGER_PATH)));
 
     // Serve Swagger UI
     app.use('/api-docs', ...swaggerDocs());
+
+    app.use(notFoundHandler);
+    app.use(errorHandler);
+
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
