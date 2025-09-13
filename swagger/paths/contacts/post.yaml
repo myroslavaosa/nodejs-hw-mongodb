@@ -1,3 +1,4 @@
+#swagger\paths\contacts\post.yaml
 tags:
   - Contacts
 summary: Create a contact
@@ -37,10 +38,31 @@ requestBody:
             description: Contact photo file
 responses:
   '201':
-    description: Contact created successfully
+    description: Successfully created contact
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas/contact.yaml'
+          type: object
+          required: [status, message, data]
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created contact!
+            data:
+              $ref: '../../components/schemas/contact.yaml'
   '401':
     description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Unauthorized

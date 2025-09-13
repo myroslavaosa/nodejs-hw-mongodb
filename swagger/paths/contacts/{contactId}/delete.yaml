@@ -1,3 +1,4 @@
+#swagger\paths\contacts\{contactId}\delete.yaml
 tags:
   - Contacts
 summary: Delete a contact
@@ -13,23 +14,31 @@ parameters:
       type: string
     description: The unique ID of the contact
 responses:
-  '200':
+  '204':
     description: Successfully deleted contact
+  '404':
+    description: Contact not found
     content:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
           properties:
             status:
               type: integer
-              example: 204
+              example: 404
             message:
               type: string
-              example: Contact deleted successfully
-  '404':
-    description: Contact not found
+              example: Contact not found
   '401':
     description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Unauthorized

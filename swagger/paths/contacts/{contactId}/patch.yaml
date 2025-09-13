@@ -1,3 +1,4 @@
+#swagger\paths\contacts\{contactId}\patch.yaml
 tags:
   - Contacts
 summary: Update a contact
@@ -19,28 +20,22 @@ requestBody:
         type: object
         properties:
           name:
-            description: "Contact's name"
             type: string
-            example: 'John Doe'
+            example: John Doe
           phoneNumber:
-            description: "Contact's phone number"
             type: string
             example: '+380501234567'
           email:
-            description: "Contact's email"
             type: string
-            example: 'john@example.com'
+            example: john@example.com
           isFavourite:
-            description: 'Whether this contact is a favourite'
             type: boolean
             example: false
           contactType:
-            description: 'Type of contact'
             type: string
             enum: [work, home, personal]
             example: personal
           photo:
-            description: "Contact's photo"
             type: string
             format: binary
 responses:
@@ -50,10 +45,7 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
+          required: [status, message, data]
           properties:
             status:
               type: integer
@@ -62,9 +54,30 @@ responses:
               type: string
               example: Successfully updated contact!
             data:
-              type: object
               $ref: '../../../components/schemas/contact.yaml'
   '401':
     description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Unauthorized
   '404':
     description: Contact not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: Contact not found

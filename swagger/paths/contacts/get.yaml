@@ -1,3 +1,4 @@
+#swagger\paths\contacts\get.yaml
 tags:
   - Contacts
 summary: Get list of contacts
@@ -28,7 +29,7 @@ parameters:
     name: sortOrder
     schema:
       type: string
-      enum: ['asc', 'desc']
+      enum: [asc, desc]
     description: Sort order
     example: asc
   - in: query
@@ -49,10 +50,7 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
+          required: [status, message, data]
           properties:
             status:
               type: integer
@@ -95,3 +93,14 @@ responses:
                   example: false
   '401':
     description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Unauthorized
