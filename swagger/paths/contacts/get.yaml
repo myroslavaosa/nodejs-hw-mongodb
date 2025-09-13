@@ -61,7 +61,7 @@ responses:
             data:
               type: object
               required:
-                - contacts
+                - data
                 - page
                 - perPage
                 - totalItems
@@ -69,7 +69,7 @@ responses:
                 - hasNextPage
                 - hasPreviousPage
               properties:
-                contacts:
+                data:
                   type: array
                   items:
                     $ref: '../../components/schemas/contact.yaml'
